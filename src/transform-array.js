@@ -13,9 +13,43 @@ const { NotImplementedError } = require('../extensions/index.js');
  * transform([1, 2, 3, '--discard-prev', 4, 5]) => [1, 2, 4, 5]
  * 
  */
-function transform(/* arr */) {
-  throw new NotImplementedError('Not implemented');
-  // remove line with error and write your code here
+ function transform(arr) {
+  if(!Array.isArray(arr)) {
+    throw new Error ("'arr' parameter must be an instance of the Array!");
+  }
+  const arrCopy = JSON.parse(JSON.stringify(arr));
+  arrCopy.forEach((el, index) => {
+      if (el === '--double-next') {
+        if(index === arr.length - 1) {
+          arrCopy.splice(index, 1);
+        } else {
+          arrCopy.splice(index, 1, arrCopy[index + 1]);
+        }
+      }
+      if (el === '--double-prev') {
+        if(index === 0 || !arrCopy[index - 1]) {
+          arrCopy.splice(index, 1);
+        } else {
+          arrCopy.splice(index, 1, arrCopy[index - 1]);
+        }
+      }
+      if (el === '--discard-next') {
+        if(index === arr.length - 1) {
+          arrCopy.splice(index, 1);
+        } else {
+          arrCopy.splice(index, 2, '');  
+        }
+      }
+      if (el === '--discard-prev') {
+        if(index === 0 || !arrCopy[index - 1]) {
+          arrCopy.splice(index, 1);
+        } else {
+          arrCopy.splice(index - 1, 2, '');
+        }
+      }
+  })
+  const resArr = arrCopy.filter(el => el !== '');
+  return resArr;
 }
 
 module.exports = {
